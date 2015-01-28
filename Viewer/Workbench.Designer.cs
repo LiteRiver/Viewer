@@ -30,6 +30,7 @@
             this.toolPayMacro = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStart = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStop = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolParseLink = new System.Windows.Forms.ToolStripMenuItem();
             this.statusWorkbench = new System.Windows.Forms.StatusStrip();
             this.statusUrl = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripWorkbench = new System.Windows.Forms.ToolStrip();
@@ -37,7 +38,6 @@
             this.toolButtonNavigate = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutWorkbench = new System.Windows.Forms.TableLayoutPanel();
             this.browser = new System.Windows.Forms.WebBrowser();
-            this.toolParseLink = new System.Windows.Forms.ToolStripMenuItem();
             this.menuWorkbench.SuspendLayout();
             this.statusWorkbench.SuspendLayout();
             this.toolStripWorkbench.SuspendLayout();
@@ -69,30 +69,37 @@
             // toolRecordMacro
             // 
             this.toolRecordMacro.Name = "toolRecordMacro";
-            this.toolRecordMacro.Size = new System.Drawing.Size(152, 22);
+            this.toolRecordMacro.Size = new System.Drawing.Size(124, 22);
             this.toolRecordMacro.Text = "录制宏";
             this.toolRecordMacro.Click += new System.EventHandler(this.toolRecordMacro_Click);
             // 
             // toolPayMacro
             // 
             this.toolPayMacro.Name = "toolPayMacro";
-            this.toolPayMacro.Size = new System.Drawing.Size(152, 22);
+            this.toolPayMacro.Size = new System.Drawing.Size(124, 22);
             this.toolPayMacro.Text = "播放宏";
             this.toolPayMacro.Click += new System.EventHandler(this.toolPayMacro_Click);
             // 
             // menuStart
             // 
             this.menuStart.Name = "menuStart";
-            this.menuStart.Size = new System.Drawing.Size(152, 22);
+            this.menuStart.Size = new System.Drawing.Size(124, 22);
             this.menuStart.Text = "开始";
             this.menuStart.Click += new System.EventHandler(this.menuStart_Click);
             // 
             // toolStop
             // 
             this.toolStop.Name = "toolStop";
-            this.toolStop.Size = new System.Drawing.Size(152, 22);
+            this.toolStop.Size = new System.Drawing.Size(124, 22);
             this.toolStop.Text = "停止";
             this.toolStop.Click += new System.EventHandler(this.toolStop_Click);
+            // 
+            // toolParseLink
+            // 
+            this.toolParseLink.Name = "toolParseLink";
+            this.toolParseLink.Size = new System.Drawing.Size(124, 22);
+            this.toolParseLink.Text = "解析链接";
+            this.toolParseLink.Click += new System.EventHandler(this.toolParseLink_Click);
             // 
             // statusWorkbench
             // 
@@ -162,16 +169,10 @@
             this.browser.ScriptErrorsSuppressed = true;
             this.browser.Size = new System.Drawing.Size(778, 479);
             this.browser.TabIndex = 4;
+            this.browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.browser_DocumentCompleted);
             this.browser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.browser_Navigated);
             this.browser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.browser_Navigating);
             this.browser.NewWindow += new System.ComponentModel.CancelEventHandler(this.browser_NewWindow);
-            // 
-            // toolParseLink
-            // 
-            this.toolParseLink.Name = "toolParseLink";
-            this.toolParseLink.Size = new System.Drawing.Size(152, 22);
-            this.toolParseLink.Text = "解析链接";
-            this.toolParseLink.Click += new System.EventHandler(this.toolParseLink_Click);
             // 
             // Workbench
             // 

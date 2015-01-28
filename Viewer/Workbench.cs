@@ -5,23 +5,27 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Macro;
 
 namespace Viewer {
-    public partial class Workbench : Form, ITaskNotify {
+    public partial class Workbench : Form, ITaskObserver {
         private ToolStripAddress toolTextboxAddress;
 
         private ViewTask m_currentTask;
 
         private MacroForm m_macroForm;
 
+        private INextIntervalParser m_nextIntervalParser;
+
         public Workbench() {
             InitializeComponent();
 
             toolTextboxAddress = new ToolStripAddress();
+            m_nextIntervalParser = new DefaultNextIntervalParser();
             toolTextboxAddress.BorderStyle = BorderStyle.FixedSingle;
             toolStripWorkbench.Items.Insert(1, toolTextboxAddress);
             toolTextboxAddress.KeyDown += toolTextboxAddress_KeyDown;
@@ -80,6 +84,13 @@ namespace Viewer {
         private void browser_Navigated(object sender, WebBrowserNavigatedEventArgs e) {
             statusUrl.Text = "当前网址：" + browser.Url;
             toolTextboxAddress.Text = browser.Url.ToString();
+        }
+
+        // 只有网页载入后才能从中获取下次执行时间，所以只能在此解析下个网页执行的时间。 
+        private void browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e) {
+            if (m_currentTask != null) {
+                m_currentTask.PendingNext(m_nextIntervalParser.Parse(browser.DocumentText)); // 获取下次时间并开始定时
+            }
         }
 
         private void browser_NewWindow(object sender, CancelEventArgs e) {
@@ -147,15 +158,11 @@ namespace Viewer {
         }
 
         public void OnView(Uri uri, int index) {
-            if (InvokeRequired) {
-                BeginInvoke(new Action(() => browser.Navigate(uri)));
-            }
+            UpdateUI(() => browser.Navigate(uri));
         }
 
         public void OnComplete() {
-            if (InvokeRequired) {
-                BeginInvoke(new Action(() => statusUrl.Text = "看完收工"));
-            }
+            UpdateUI(() => statusUrl.Text = "看完收工");
         }
 
         private void toolParseLink_Click(object sender, EventArgs e) {
@@ -172,12 +179,17 @@ namespace Viewer {
         }
 
         private void ShowMessage(string msg, Exception ex = null) {
-            var str = msg + (ex == null ? "" : ("：" + ex.ToString()));
-
-            if (InvokeRequired) {
-                Invoke(new Action(() => MessageBox.Show(str)));
-            } else {
+            UpdateUI(() => {
+                var str = msg + (ex == null ? "" : ("：" + ex.ToString()));
                 MessageBox.Show(str);
+            });
+        }
+
+        private void UpdateUI(Action action) {
+            if (InvokeRequired) {
+                BeginInvoke(action);
+            } else {
+                action();
             }
         }
     }

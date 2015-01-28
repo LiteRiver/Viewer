@@ -52,7 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ITaskNotify.cs" />
+    <Compile Include="DefaultNextIntervalParser.cs" />
+    <Compile Include="INextIntervalParser.cs" />
+    <Compile Include="ITaskObserver.cs" />
     <Compile Include="MacroForm.cs">
       <SubType>Form</SubType>
     </Compile>

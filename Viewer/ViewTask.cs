@@ -16,20 +16,18 @@ namespace Viewer {
 
         private Timer m_macroTimer;
 
-        private ITaskNotify m_taskNotify;
+        private ITaskObserver m_taskObserver;
 
 
-        public ViewTask(TaskContext context, ITaskNotify taskNotify) {
+        public ViewTask(TaskContext context, ITaskObserver taskObserver) {
             m_context = context;
-            m_taskNotify = taskNotify;
+            m_taskObserver = taskObserver;
         }
 
         public void Start() {
             Stop();
-            m_index = -1;
-            m_changeTimer = new Timer(ChangeTimerCallback, null, TimeSpan.Zero, m_context.ChangeInterval);
-            m_macroTimer = new Timer(MacroTimerCallback, null, m_context.MacroInterval, m_context.MacroInterval);
-            m_taskNotify.OnStart();
+            ViewCurrent();
+            m_taskObserver.OnStart();
         }
 
         public void Stop() {
@@ -46,12 +44,34 @@ namespace Viewer {
         }
 
         private void ChangeTimerCallback(object state) {
+            ViewCurrent();
+        }
+
+        private void ViewCurrent() {
             var next = Next();
             if (next != null) {
-                m_taskNotify.OnView(next, m_index);
+                m_taskObserver.OnView(next, m_index);
             } else {
                 Stop();
-                m_taskNotify.OnComplete();
+                m_taskObserver.OnComplete();
+            }
+        }
+
+        public void PendingNext(TimeSpan nextInterval) {
+            if (nextInterval == TimeSpan.Zero){
+                nextInterval = m_context.ChangeInterval;
+            }
+
+            if (m_changeTimer == null) {
+                m_changeTimer = new Timer(ChangeTimerCallback, null, nextInterval, TimeSpan.FromMilliseconds(-1));
+            } else {
+                m_changeTimer.Change(nextInterval, TimeSpan.FromMilliseconds(-1));
+            }
+
+            if (m_macroTimer == null) {
+                m_macroTimer = new Timer(MacroTimerCallback, null, m_context.MacroInterval, m_context.MacroInterval);
+            } else {
+                m_macroTimer.Change(m_context.MacroInterval, m_context.MacroInterval);
             }
         }
 

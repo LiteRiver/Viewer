@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Viewer {
-    public interface ITaskNotify {
+    public interface ITaskObserver {
 
         void OnStart();
 
