@@ -86,7 +86,7 @@ namespace Viewer {
             toolTextboxAddress.Text = browser.Url.ToString();
         }
 
-        // 只有网页载入后才能从中获取下次执行时间，所以只能在此解析下个网页执行的时间。 
+        // 只有网页载入后才能从中获取下次执行时间，所以只能在此解析下个网页执行的时间。
         private void browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e) {
             if (m_currentTask != null) {
                 m_currentTask.PendingNext(m_nextIntervalParser.Parse(browser.DocumentText)); // 获取下次时间并开始定时

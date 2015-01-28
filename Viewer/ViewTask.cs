@@ -62,12 +62,14 @@ namespace Viewer {
                 nextInterval = m_context.ChangeInterval;
             }
 
+            // 开始切换网页的定时器
             if (m_changeTimer == null) {
                 m_changeTimer = new Timer(ChangeTimerCallback, null, nextInterval, TimeSpan.FromMilliseconds(-1));
             } else {
                 m_changeTimer.Change(nextInterval, TimeSpan.FromMilliseconds(-1));
             }
 
+            // 开始执行宏的定时器
             if (m_macroTimer == null) {
                 m_macroTimer = new Timer(MacroTimerCallback, null, m_context.MacroInterval, m_context.MacroInterval);
             } else {
