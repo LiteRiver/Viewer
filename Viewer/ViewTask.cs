@@ -79,7 +79,7 @@ namespace Viewer {
         }
 
         private void ReportTimerCallback(object state) {
-            m_taskObserver.OnReport((int)((m_endTime - DateTime.Now).TotalSeconds));
+            m_taskObserver.OnReport(m_endTime - DateTime.Now);
         }
 
         private Uri Next() {
