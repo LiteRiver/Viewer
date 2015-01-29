@@ -8,6 +8,9 @@ using Viewer.Macro;
 
 namespace Viewer {
     public class ViewTask {
+        // 默认 1s 报告一次进度
+        private static readonly TimeSpan DefaultReportInterval = TimeSpan.FromSeconds(1);
+
         private TaskContext m_context;
 
         private int m_index = -1;
@@ -16,7 +19,11 @@ namespace Viewer {
 
         private Timer m_macroTimer;
 
+        private Timer m_reportTimer;
+
         private ITaskObserver m_taskObserver;
+
+        private DateTime m_endTime;
 
 
         public ViewTask(TaskContext context, ITaskObserver taskObserver) {
@@ -32,15 +39,23 @@ namespace Viewer {
 
         public void Stop() {
             m_index = -1;
-            if (m_changeTimer != null) {
-                m_changeTimer.Dispose();
-                m_changeTimer = null;
+            StopTimer();
+        }
+
+        public void PendingNext(TimeSpan nextInterval) {
+            if (nextInterval == TimeSpan.Zero) {
+                nextInterval = m_context.ChangeInterval;
             }
 
-            if (m_macroTimer != null) {
-                m_macroTimer.Dispose();
-                m_macroTimer = null;
-            }
+            m_endTime = DateTime.Now + nextInterval;
+
+            StopTimer();
+            // 开始切换网页的定时器
+            m_changeTimer = new Timer(ChangeTimerCallback, null, nextInterval, TimeSpan.FromMilliseconds(-1));
+            // 开始执行宏的定时器
+            m_macroTimer = new Timer(MacroTimerCallback, null, m_context.MacroInterval, m_context.MacroInterval);
+            // 开始报告进度的定时器
+            m_reportTimer = new Timer(ReportTimerCallback, null, TimeSpan.Zero, DefaultReportInterval);
         }
 
         private void ChangeTimerCallback(object state) {
@@ -57,30 +72,14 @@ namespace Viewer {
             }
         }
 
-        public void PendingNext(TimeSpan nextInterval) {
-            if (nextInterval == TimeSpan.Zero){
-                nextInterval = m_context.ChangeInterval;
-            }
-
-            // 开始切换网页的定时器
-            if (m_changeTimer == null) {
-                m_changeTimer = new Timer(ChangeTimerCallback, null, nextInterval, TimeSpan.FromMilliseconds(-1));
-            } else {
-                m_changeTimer.Change(nextInterval, TimeSpan.FromMilliseconds(-1));
-            }
-
-            // 开始执行宏的定时器
-            if (m_macroTimer == null) {
-                m_macroTimer = new Timer(MacroTimerCallback, null, m_context.MacroInterval, m_context.MacroInterval);
-            } else {
-                m_macroTimer.Change(m_context.MacroInterval, m_context.MacroInterval);
-            }
-        }
-
         private void MacroTimerCallback(object state) {
             lock (this) {
                 MacroEvent.Playback(m_context.MacroEvents);
             }
+        }
+
+        private void ReportTimerCallback(object state) {
+            m_taskObserver.OnReport((int)((m_endTime - DateTime.Now).TotalSeconds));
         }
 
         private Uri Next() {
@@ -89,6 +88,23 @@ namespace Viewer {
                 return m_context.Urls[m_index];
             }
             return null;
+        }
+
+        private void StopTimer() {
+            if (m_changeTimer != null) {
+                m_changeTimer.Dispose();
+                m_changeTimer = null;
+            }
+
+            if (m_macroTimer != null) {
+                m_macroTimer.Dispose();
+                m_macroTimer = null;
+            }
+
+            if (m_reportTimer != null) {
+                m_reportTimer.Dispose();
+                m_reportTimer = null;
+            }
         }
     }
 }

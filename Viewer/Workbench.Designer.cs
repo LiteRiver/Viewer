@@ -38,6 +38,7 @@
             this.toolButtonNavigate = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutWorkbench = new System.Windows.Forms.TableLayoutPanel();
             this.browser = new System.Windows.Forms.WebBrowser();
+            this.statusProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuWorkbench.SuspendLayout();
             this.statusWorkbench.SuspendLayout();
             this.toolStripWorkbench.SuspendLayout();
@@ -104,7 +105,8 @@
             // statusWorkbench
             // 
             this.statusWorkbench.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusUrl});
+            this.statusUrl,
+            this.statusProgress});
             this.statusWorkbench.Location = new System.Drawing.Point(0, 540);
             this.statusWorkbench.Name = "statusWorkbench";
             this.statusWorkbench.Size = new System.Drawing.Size(784, 22);
@@ -113,8 +115,12 @@
             // 
             // statusUrl
             // 
+            this.statusUrl.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+            this.statusUrl.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.statusUrl.Name = "statusUrl";
-            this.statusUrl.Size = new System.Drawing.Size(0, 17);
+            this.statusUrl.Size = new System.Drawing.Size(738, 17);
+            this.statusUrl.Spring = true;
+            this.statusUrl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // toolStripWorkbench
             // 
@@ -174,6 +180,13 @@
             this.browser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.browser_Navigating);
             this.browser.NewWindow += new System.ComponentModel.CancelEventHandler(this.browser_NewWindow);
             // 
+            // statusProgress
+            // 
+            this.statusProgress.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.statusProgress.Name = "statusProgress";
+            this.statusProgress.Size = new System.Drawing.Size(0, 17);
+            this.statusProgress.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // Workbench
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -215,6 +228,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolPayMacro;
         private System.Windows.Forms.ToolStripMenuItem toolStop;
         private System.Windows.Forms.ToolStripMenuItem toolParseLink;
+        private System.Windows.Forms.ToolStripStatusLabel statusProgress;
 
 
     }

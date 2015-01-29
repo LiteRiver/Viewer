@@ -7,6 +7,8 @@ namespace Viewer {
 
         void OnView(Uri uri, int index);
 
+        void OnReport(int seconds);
+
         void OnComplete();
     }
 }

@@ -161,6 +161,12 @@ namespace Viewer {
             UpdateUI(() => browser.Navigate(uri));
         }
 
+        public void OnReport(int seconds) {
+            var left = TimeSpan.FromSeconds(seconds);
+
+            UpdateUI(() => statusProgress.Text = string.Format("当前页面还剩[{0:00}:{1:00}:{2:00}]",left.Hours, left.Minutes, left.Seconds));
+        }
+
         public void OnComplete() {
             UpdateUI(() => statusUrl.Text = "看完收工");
         }
