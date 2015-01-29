@@ -19,6 +19,7 @@ namespace Viewer {
                 var match = regex.Match(doc);
                 if (match.Success) {
                     interval = TimeSpan.FromMinutes(int.Parse(match.Groups["time"].Value));
+                    interval = interval.Add(TimeSpan.FromMinutes(5));
                 }
             } catch { 
                 // 提取异常，忽略错误
