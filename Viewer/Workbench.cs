@@ -168,7 +168,10 @@ namespace Viewer {
         }
 
         public void OnComplete() {
-            UpdateUI(() => statusUrl.Text = "看完收工");
+            UpdateUI(() => { 
+                statusUrl.Text = "看完收工";
+                statusProgress.Text = string.Empty;
+            });
         }
 
         private void toolParseLink_Click(object sender, EventArgs e) {
